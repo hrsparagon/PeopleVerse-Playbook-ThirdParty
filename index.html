@@ -147,6 +147,13 @@ body{font-family:'Montserrat',sans-serif;background:#F4F7FB;color:#222}
 
 .step-panel{display:none}
 .step-panel.s-active{display:block}
+  .login-step-panel{
+    display:none;
+}
+
+.login-step-panel.s-active{
+    display:block;
+}
 
 .step-header-tut{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px 18px;background:var(--pv-blue);border-radius:10px}
 .step-num-tut{background:var(--pv-teal);color:#fff;width:32px;height:32px;border-radius:50%;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -368,6 +375,113 @@ body{font-family:'Montserrat',sans-serif;background:#F4F7FB;color:#222}
 
 <div class="breadcrumb">
     Umum › <span>Cara Login</span>
+</div>
+  <div class="step-nav" id="loginStepNav">
+
+    <div class="step-dot s-active" onclick="goLoginStep(0)">
+        <div class="dot-circle">1</div>
+        <div class="dot-label">Buka Website</div>
+    </div>
+
+    <div class="step-dot" onclick="goLoginStep(1)">
+        <div class="dot-circle">2</div>
+        <div class="dot-label">Input User ID</div>
+    </div>
+
+    <div class="step-dot" onclick="goLoginStep(2)">
+        <div class="dot-circle">3</div>
+        <div class="dot-label">Input Password</div>
+    </div>
+
+    <div class="step-dot" onclick="goLoginStep(3)">
+        <div class="dot-circle">4</div>
+        <div class="dot-label">Login</div>
+    </div>
+
+</div>
+  <!-- STEP 1 -->
+<div class="login-step-panel s-active" id="login-sp-0">
+
+    <div class="card">
+        <div class="card-title">
+            🌐 Tahap 1 — Buka Website PeopleVerse
+        </div>
+
+        <div class="card-body">
+            Masuk ke:
+
+            <div class="tooltip-bx" style="margin-top:10px">
+                https://id.sunfishhr.com/
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- STEP 2 -->
+<div class="login-step-panel" id="login-sp-1">
+
+    <div class="card">
+        <div class="card-title">
+            👤 Tahap 2 — Input User ID
+        </div>
+
+        <div class="card-body">
+
+            Untuk PIC 3rd Party, User ID telah diinformasikan secara terpisah.
+
+            <br><br>
+
+            Untuk HRBP DC dan Admin HR dapat login menggunakan email corporate melalui SSO.
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- STEP 3 -->
+<div class="login-step-panel" id="login-sp-2">
+
+    <div class="card">
+        <div class="card-title">
+            🔒 Tahap 3 — Input Password
+        </div>
+
+        <div class="card-body">
+
+            Masukkan password yang sesuai.
+
+            <br><br>
+
+            Apabila lupa password, silakan menghubungi HRS.
+
+        </div>
+    </div>
+
+</div>
+
+
+<!-- STEP 4 -->
+<div class="login-step-panel" id="login-sp-3">
+
+    <div class="card">
+        <div class="card-title">
+            🚀 Tahap 4 — Login
+        </div>
+
+        <div class="card-body">
+
+            • PIC 3rd Party → klik tombol <strong>Login</strong>.
+
+            <br><br>
+
+            • HRBP DC dan Admin HR → klik tombol <strong>Login_SSO</strong> menggunakan email corporate.
+
+        </div>
+    </div>
+
 </div>
 
 <div class="highlight-box">
@@ -1111,6 +1225,24 @@ document.querySelectorAll('.nav-item[onclick]').forEach(function(item){
     this.classList.add('active');
   });
 });
+  function goLoginStep(index){
+
+    document.querySelectorAll('.login-step-panel')
+        .forEach(panel => panel.classList.remove('s-active'));
+
+    document.querySelectorAll('#loginStepNav .step-dot')
+        .forEach(dot => dot.classList.remove('s-active'));
+
+    document
+        .getElementById('login-sp-' + index)
+        .classList.add('s-active');
+
+    document
+        .querySelectorAll('#loginStepNav .step-dot')[index]
+        .classList.add('s-active');
+
+}
 </script>
 </body>
 </html>
+
