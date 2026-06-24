@@ -1,151 +1,971 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guidebook Third Party Data Management — PeopleVerse</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pv-blue:#1A3A6B;--pv-teal:#68CBC7;--pv-light:#D0edfa;--pv-teal-mid:#4AADAA;
+  --pv-light-bg:#EFF9FF;--pv-red:#e53e3e;--pv-orange:#c05621;
+}
+body{font-family:'Montserrat',sans-serif;background:#F4F7FB;color:#222}
+.gb-layout{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.gb-sidebar{width:240px;min-width:240px;background:var(--pv-blue);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.sidebar-logo-txt{color:#fff;font-size:14px;font-weight:700;letter-spacing:0.5px}
+.sidebar-logo-sub{color:var(--pv-teal);font-size:10px;font-weight:500;margin-top:3px}
+.sidebar-nav{padding:8px 0;flex:1}
+.nav-section{padding:14px 16px 4px;color:rgba(255,255,255,0.35);font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
+.nav-item{display:block;padding:9px 16px;color:rgba(255,255,255,0.72);font-size:11px;font-weight:500;cursor:pointer;border-left:3px solid transparent;transition:all .18s;text-decoration:none;line-height:1.4}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;border-left-color:var(--pv-teal)}
+.nav-item.active{background:rgba(104,203,199,0.15);color:#fff;border-left-color:var(--pv-teal);font-weight:600}
+.nav-item.sub{padding-left:30px;font-size:10px;color:rgba(255,255,255,0.5)}
+.nav-item.sub.active{color:var(--pv-teal)}
+.sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.3);font-size:9px}
+
+/* MAIN */
+.gb-main{margin-left:240px;flex:1;min-height:100vh}
+.page{display:none;padding:36px 40px;max-width:980px}
+.page.active{display:block}
+
+/* COVER */
+.cover-banner{background:linear-gradient(135deg,var(--pv-blue) 0%,#0d2a54 60%,#041830 100%);border-radius:16px;padding:52px 48px;position:relative;overflow:hidden;margin-bottom:28px}
+.cover-banner::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;border:1px solid rgba(104,203,199,0.12)}
+.cover-banner::after{content:'';position:absolute;top:-50px;right:-50px;width:320px;height:320px;border-radius:50%;border:1px solid rgba(104,203,199,0.18)}
+.cover-badge{background:rgba(104,203,199,0.2);border:1px solid var(--pv-teal);color:var(--pv-teal);font-size:10px;font-weight:700;letter-spacing:1.5px;padding:4px 14px;border-radius:20px;margin-bottom:20px;display:inline-block}
+.cover-title{color:#fff;font-size:36px;font-weight:700;line-height:1.2;margin-bottom:10px}
+.cover-title span{color:var(--pv-teal)}
+.cover-sub{color:rgba(255,255,255,0.62);font-size:13px;margin-bottom:28px;max-width:500px;line-height:1.65}
+.cover-meta{display:flex;gap:28px;flex-wrap:wrap}
+.cover-meta-item{color:rgba(255,255,255,0.45);font-size:11px}
+.cover-meta-item strong{color:var(--pv-teal);display:block;font-size:13px;font-weight:600;margin-bottom:2px}
+.cover-nav{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;position:relative;z-index:2}
+.btn-primary{background:var(--pv-teal);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:var(--pv-teal-mid)}
+.btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.3);padding:10px 20px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:#fff}
+
+/* SECTION HEADER */
+.section-header{background:var(--pv-blue);padding:26px 40px;margin:-36px -40px 28px -40px}
+.section-badge{background:rgba(104,203,199,0.22);color:var(--pv-teal);font-size:9px;font-weight:700;letter-spacing:1.2px;padding:3px 10px;border-radius:12px;display:inline-block;margin-bottom:8px}
+.section-title{color:#fff;font-size:22px;font-weight:700}
+.section-desc{color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;line-height:1.55}
+
+/* BREADCRUMB */
+.breadcrumb{font-size:11px;color:#999;margin-bottom:22px}
+.breadcrumb span{color:var(--pv-teal);font-weight:600}
+
+/* CARDS */
+.card{background:#fff;border:1px solid #e4eef5;border-radius:12px;padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(26,58,107,0.05)}
+.card-teal{border-left:3px solid var(--pv-teal);background:var(--pv-light-bg)}
+.card-title{font-size:13px;font-weight:700;color:var(--pv-blue);margin-bottom:8px}
+.card-body{font-size:12px;color:#444;line-height:1.75}
+
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+/* FLOW */
+.flow-title{font-size:14px;font-weight:700;color:var(--pv-blue);margin:24px 0 14px;display:flex;align-items:center;gap:8px}
+.flow-title::before{content:'';width:4px;height:18px;background:var(--pv-teal);border-radius:2px;display:inline-block;flex-shrink:0}
+.flow-container{overflow-x:auto;border:1px solid #e4eef5;border-radius:12px;background:#fff;box-shadow:0 1px 4px rgba(26,58,107,0.04)}
+.actors-row{display:flex;gap:0;min-width:600px}
+.actor-col{flex:1;min-width:130px}
+.actor-head{background:var(--pv-blue);color:#fff;text-align:center;padding:10px 8px;font-size:9.5px;font-weight:700;line-height:1.3}
+.actor-head.teal{background:var(--pv-teal)}
+.actor-head.light{background:var(--pv-light);color:var(--pv-blue)}
+.actor-head.dark{background:#1a1a2e}
+.actor-body{padding:12px 10px;border-right:1px dashed #d8eef5;min-height:260px;background:#fafefe}
+.actor-body:last-child{border-right:none}
+.pbox{border-radius:8px;padding:9px 10px;font-size:10px;font-weight:600;text-align:center;line-height:1.45;margin:5px 0}
+.pbox-blue{background:var(--pv-blue);color:#fff}
+.pbox-teal{background:var(--pv-teal);color:#fff}
+.pbox-light{background:var(--pv-light);color:var(--pv-blue);border:1px solid #b8def0}
+.pbox-white{background:#fff;color:var(--pv-blue);border:1.5px solid var(--pv-blue)}
+.arr{text-align:center;color:var(--pv-teal);margin:3px 0;font-size:16px;line-height:1}
+.step-tag{display:inline-block;background:var(--pv-light);color:var(--pv-blue);font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px;margin-top:4px}
+.step-tag.orange{background:#FFE0B2;color:#BF360C}
+
+/* TABLE */
+.info-table{width:100%;border-collapse:collapse;font-size:11.5px;margin:14px 0;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(26,58,107,0.05)}
+.info-table th{background:var(--pv-blue);color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:10.5px}
+.info-table td{padding:9px 14px;border-bottom:1px solid #eef3f8;color:#444;vertical-align:top;line-height:1.55}
+.info-table tr:last-child td{border-bottom:none}
+.info-table tr:hover td{background:#f5fbfe}
+.badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:9.5px;font-weight:700}
+.badge-teal{background:rgba(104,203,199,0.18);color:#0d8f8a}
+.badge-blue{background:rgba(26,58,107,0.1);color:var(--pv-blue)}
+.badge-orange{background:#FFF3E0;color:#BF360C}
+
+/* TABS */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid #e4eef5;margin-bottom:20px;overflow-x:auto}
+.tab-btn{padding:10px 18px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;color:#999;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;transition:all .18s;margin-bottom:-2px}
+.tab-btn:hover{color:var(--pv-blue)}
+.tab-btn.active{color:var(--pv-blue);border-bottom-color:var(--pv-teal)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* HIGHLIGHT / WARN BOXES */
+.highlight-box{border-radius:10px;padding:16px 20px;margin:14px 0;border:1px solid var(--pv-teal);background:var(--pv-light-bg)}
+.highlight-box .hb-title{font-size:12.5px;font-weight:700;color:var(--pv-blue);margin-bottom:5px}
+.highlight-box .hb-body{font-size:11.5px;color:#444;line-height:1.7}
+.warn-box{border-color:#F5C842;background:#FFFDF0}
+.danger-box{border-color:#FFCDD2;background:#FFF5F5}
+
+/* DEADLINE PILLS */
+.deadline-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.deadline-pill{color:#fff;border-radius:8px;padding:6px 16px;font-size:10.5px;font-weight:700}
+.dp-blue{background:var(--pv-blue)}
+.dp-teal{background:var(--pv-teal)}
+.dp-dark{background:#1a1a2e}
+
+/* PILL ROW */
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pill{background:var(--pv-light);color:var(--pv-blue);font-size:10px;font-weight:600;padding:5px 13px;border-radius:20px}
+.pill.teal{background:var(--pv-teal);color:#fff}
+
+/* ===================== TUTORIAL STYLES ===================== */
+.tut-intro{background:var(--pv-blue);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.tut-intro-badge{background:var(--pv-teal);border-radius:10px;padding:8px 14px;color:#fff;font-size:11px;font-weight:700;white-space:nowrap}
+.tut-intro-title{color:#fff;font-size:14px;font-weight:700}
+.tut-intro-sub{color:rgba(255,255,255,0.6);font-size:10px;margin-top:3px}
+
+.step-nav{display:flex;gap:0;margin-bottom:24px;overflow-x:auto;border-bottom:2px solid #e4eef5}
+.step-dot{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;min-width:76px;transition:all .2s}
+.dot-circle{width:28px;height:28px;border-radius:50%;background:#e8f4f8;color:var(--pv-blue);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.step-dot:hover .dot-circle{background:var(--pv-teal);color:#fff}
+.step-dot.s-active .dot-circle{background:var(--pv-blue);color:#fff}
+.step-dot.s-done .dot-circle{background:var(--pv-teal);color:#fff}
+.dot-label{font-size:9px;color:#888;text-align:center;line-height:1.3;max-width:72px}
+.step-dot.s-active{border-bottom-color:var(--pv-teal)}
+.step-dot.s-active .dot-label{color:var(--pv-blue);font-weight:600}
 
 .step-panel{display:none}
 .step-panel.s-active{display:block}
-  .login-step-panel{
-    display:none;
-}
-
-.login-step-panel.s-active{
-    display:block;
-}
 
 .step-header-tut{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px 18px;background:var(--pv-blue);border-radius:10px}
 .step-num-tut{background:var(--pv-teal);color:#fff;width:32px;height:32px;border-radius:50%;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-@@ -368,6 +375,113 @@
+.step-title-tut{color:#fff;font-size:14px;font-weight:700}
+.step-sub-tut{color:rgba(255,255,255,0.6);font-size:11px;margin-top:2px}
 
-<div class="breadcrumb">
-Umum › <span>Cara Login</span>
-</div>
-  <div class="step-nav" id="loginStepNav">
+.action-box{background:var(--pv-light-bg);border:1.5px solid var(--pv-teal);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start}
+.action-icon-tut{width:34px;height:34px;background:var(--pv-teal);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:18px}
+.action-label{font-size:11px;font-weight:700;color:var(--pv-blue);margin-bottom:3px}
+.action-desc{font-size:11px;color:#444;line-height:1.6}
+.action-path{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid #cde;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--pv-blue);margin-top:5px}
+.action-path span{color:var(--pv-teal)}
 
-    <div class="step-dot s-active" onclick="goLoginStep(0)">
-        <div class="dot-circle">1</div>
-        <div class="dot-label">Buka Website</div>
-    </div>
+.global-rules-box{background:#FFF9E6;border:1.5px solid #F5C842;border-radius:10px;padding:14px 18px;margin-bottom:18px}
+.gr-title{font-size:11px;font-weight:700;color:#7B4F00;margin-bottom:8px}
+.gr-item{display:flex;align-items:flex-start;gap:8px;font-size:11px;color:#555;margin-bottom:5px;line-height:1.5}
+.gr-item::before{content:'→';color:var(--pv-orange);font-weight:700;flex-shrink:0}
 
-    <div class="step-dot" onclick="goLoginStep(1)">
-        <div class="dot-circle">2</div>
-        <div class="dot-label">Input User ID</div>
-    </div>
+/* UI MOCKUP */
+.ui-mockup{background:#f0f4f8;border:1px solid #d0dde8;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.ui-topbar{background:#1e3a8a;padding:7px 12px;display:flex;align-items:center;gap:8px}
+.ui-topbar-logo{color:#fff;font-size:11px;font-weight:700}
+.ui-topbar-url{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);font-size:9px;padding:3px 8px;border-radius:4px;flex:1}
+.ui-body-tut{display:flex;min-height:280px}
+.ui-sidebar-tut{width:42px;background:#1e3a8a;display:flex;flex-direction:column;align-items:center;padding-top:12px;gap:10px;flex-shrink:0}
+.ui-icon-tut{width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:12px}
+.ui-icon-tut.act{background:var(--pv-teal);color:#fff}
+.ui-sidenav-tut{width:118px;background:#f8fafc;border-right:1px solid #e4eef5;padding:8px 0;flex-shrink:0}
+.ui-sidenav-item-tut{font-size:9px;padding:6px 10px;color:#555;border-left:2px solid transparent;line-height:1.3;cursor:default}
+.ui-sidenav-item-tut.act{color:var(--pv-blue);font-weight:700;border-left-color:var(--pv-teal);background:var(--pv-light-bg)}
+.ui-sidenav-item-tut.done{color:#2E7D32;font-weight:600}
+.ui-sidenav-item-tut.dim{color:#bbb}
+.ui-content-tut{flex:1;padding:12px 14px;background:#fff;overflow:hidden}
 
-    <div class="step-dot" onclick="goLoginStep(2)">
-        <div class="dot-circle">3</div>
-        <div class="dot-label">Input Password</div>
-    </div>
+.form-section-title{font-size:9px;font-weight:700;color:#fff;background:var(--pv-blue);padding:4px 10px;border-radius:5px;margin-bottom:8px;display:inline-block}
+.form-row-tut{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.form-row-tut.single{grid-template-columns:1fr}
+.form-row-tut.triple{grid-template-columns:1fr 1fr 1fr}
+.field-wrap-tut{position:relative}
+.field-lbl{font-size:8px;font-weight:700;color:#444;margin-bottom:3px;display:flex;align-items:center;gap:3px}
+.field-lbl .req{color:var(--pv-red);font-size:10px}
+.field-lbl .opt-tag{font-size:7px;background:#e8f4f8;color:#666;padding:1px 5px;border-radius:4px;font-weight:600}
+.field-inp{height:26px;background:#f8fafc;border:1px solid #d0dde8;border-radius:5px;font-size:8px;color:#999;padding:0 8px;display:flex;align-items:center}
+.field-inp.hi{border:2px solid var(--pv-teal);background:var(--pv-light-bg);color:var(--pv-blue);font-weight:600}
+.field-inp.val{color:var(--pv-blue);font-weight:600;background:#fff}
+.field-sel{height:26px;background:#f8fafc;border:1px solid #d0dde8;border-radius:5px;font-size:8px;color:#999;padding:0 8px;display:flex;align-items:center;justify-content:space-between}
+.field-sel.hi{border:2px solid var(--pv-teal);background:var(--pv-light-bg)}
+.field-auto{height:26px;background:#f0f0f0;border:1px dashed #ccc;border-radius:5px;font-size:8px;color:#aaa;padding:0 8px;display:flex;align-items:center;font-style:italic}
 
-    <div class="step-dot" onclick="goLoginStep(3)">
-        <div class="dot-circle">4</div>
-        <div class="dot-label">Login</div>
-    </div>
+.callout{display:flex;align-items:center;gap:8px;margin:8px 0 6px;font-size:10px;font-weight:700;color:#E65100}
+.callout::before{content:'👆';font-size:14px;flex-shrink:0}
 
-</div>
-  <!-- STEP 1 -->
-<div class="login-step-panel s-active" id="login-sp-0">
+.tooltip-bx{background:#1e3a8a;color:#fff;border-radius:8px;padding:8px 11px;margin-top:5px;font-size:9.5px;line-height:1.65;position:relative}
+.tooltip-bx::before{content:'';position:absolute;top:-5px;left:14px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid #1e3a8a}
+.tt-row{display:flex;gap:6px;margin-bottom:4px;align-items:flex-start}
+.tt-row:last-child{margin-bottom:0}
+.tt-icon{color:var(--pv-teal);font-weight:700;flex-shrink:0;font-size:10px;margin-top:1px}
+.tt-text{color:rgba(255,255,255,0.9);line-height:1.5}
+.tt-eg{background:rgba(104,203,199,0.2);border-radius:4px;padding:3px 7px;margin-top:5px;font-size:9px;color:var(--pv-teal)}
+.tt-warn{background:rgba(245,200,66,0.18);border-radius:4px;padding:3px 7px;margin-top:4px;font-size:9px;color:#FAC775}
 
-    <div class="card">
-        <div class="card-title">
-            🌐 Tahap 1 — Buka Website PeopleVerse
-        </div>
+/* RULE CARDS */
+.rule-section-title{display:flex;align-items:center;gap:10px;margin:20px 0 14px}
+.rule-section-title::before,.rule-section-title::after{content:'';flex:1;height:1px;background:#e4eef5}
+.rule-section-title span{font-size:11px;font-weight:700;color:var(--pv-blue);white-space:nowrap;padding:0 4px}
+.rule-card{background:#fff;border:1px solid #e4eef5;border-radius:10px;padding:14px 18px;margin-bottom:12px;box-shadow:0 1px 3px rgba(26,58,107,0.04)}
+.rule-card-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #eef3f8}
+.rule-card-badge{background:var(--pv-blue);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap}
+.rule-card-title{font-size:13px;font-weight:700;color:var(--pv-blue)}
+.rule-row{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #f0f5f8;font-size:11px}
+.rule-row:last-child{border-bottom:none;padding-bottom:0}
+.ri{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0;margin-top:1px}
+.ri-w{background:var(--pv-red);color:#fff}
+.ri-t{background:var(--pv-teal);color:#fff}
+.ri-warn{background:#F5C842;color:#7B4F00}
+.ri-s{background:#e4eef5;color:#555}
+.rule-text{flex:1;line-height:1.6;color:#333}
+.rule-text strong{color:var(--pv-blue)}
+.rule-eg{background:#f0f7ff;border-left:2px solid var(--pv-teal);padding:4px 9px;border-radius:0 4px 4px 0;margin-top:5px;font-size:10px;color:var(--pv-blue)}
+.rule-eg-bad{background:#fff5f5;border-left:2px solid var(--pv-red);padding:4px 9px;border-radius:0 4px 4px 0;margin-top:4px;font-size:10px;color:#c53030}
 
-        <div class="card-body">
-            Masuk ke:
+/* LEGEND */
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:#555}
+.legend-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0}
 
-            <div class="tooltip-bx" style="margin-top:10px">
-                https://id.sunfishhr.com/
-            </div>
-        </div>
-    </div>
+/* NAV FOOTER */
+.nav-footer-tut{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:16px;border-top:1px solid #e4eef5}
+.nav-footer-tut button{font-size:11px;font-weight:600;padding:8px 18px;border-radius:8px;cursor:pointer;border:none;transition:all .2s;font-family:'Montserrat',sans-serif}
+.btn-tut-prev{background:#f0f4f8;color:var(--pv-blue)}
+.btn-tut-next{background:var(--pv-blue);color:#fff}
+.btn-tut-prev:hover{background:#e4eef5}
+.btn-tut-next:hover{background:var(--pv-teal)}
+.step-counter-tut{font-size:11px;color:#999}
 
-</div>
+/* HIGHLIGHT RING */
+@keyframes pring{0%,100%{box-shadow:0 0 0 0 rgba(255,87,34,.4)}50%{box-shadow:0 0 0 5px rgba(255,87,34,0)}}
+.hring{position:relative}
+.hring::after{content:'';position:absolute;inset:-3px;border:2.5px solid #FF5722;border-radius:8px;animation:pring 1.6s ease-in-out infinite;pointer-events:none}
 
+/* SUCCESS */
+.success-box{background:#E8F5E9;border:1px solid #81C784;border-radius:10px;padding:14px 18px;margin-top:16px;display:flex;gap:12px;align-items:flex-start}
+.success-icon{font-size:22px;flex-shrink:0}
+.success-title{font-size:12px;font-weight:700;color:#2E7D32;margin-bottom:4px}
+.success-body{font-size:11px;color:#388E3C;line-height:1.65}
 
-<!-- STEP 2 -->
-<div class="login-step-panel" id="login-sp-1">
-
-    <div class="card">
-        <div class="card-title">
-            👤 Tahap 2 — Input User ID
-        </div>
-
-        <div class="card-body">
-
-            Untuk PIC 3rd Party, User ID telah diinformasikan secara terpisah.
-
-            <br><br>
-
-            Untuk HRBP DC dan Admin HR dapat login menggunakan email corporate melalui SSO.
-
-        </div>
-    </div>
-
-</div>
-
-
-<!-- STEP 3 -->
-<div class="login-step-panel" id="login-sp-2">
-
-    <div class="card">
-        <div class="card-title">
-            🔒 Tahap 3 — Input Password
-        </div>
-
-        <div class="card-body">
-
-            Masukkan password yang sesuai.
-
-            <br><br>
-
-            Apabila lupa password, silakan menghubungi HRS.
-
-        </div>
-    </div>
-
-</div>
-
-
-<!-- STEP 4 -->
-<div class="login-step-panel" id="login-sp-3">
-
-    <div class="card">
-        <div class="card-title">
-            🚀 Tahap 4 — Login
-        </div>
-
-        <div class="card-body">
-
-            • PIC 3rd Party → klik tombol <strong>Login</strong>.
-
-            <br><br>
-
-            • HRBP DC dan Admin HR → klik tombol <strong>Login_SSO</strong> menggunakan email corporate.
-
-        </div>
-    </div>
-
-</div>
-
-<div class="highlight-box">
-@@ -1111,6 +1225,24 @@
-this.classList.add('active');
-});
-});
-  function goLoginStep(index){
-
-    document.querySelectorAll('.login-step-panel')
-        .forEach(panel => panel.classList.remove('s-active'));
-
-    document.querySelectorAll('#loginStepNav .step-dot')
-        .forEach(dot => dot.classList.remove('s-active'));
-
-    document
-        .getElementById('login-sp-' + index)
-        .classList.add('s-active');
-
-    document
-        .querySelectorAll('#loginStepNav .step-dot')[index]
-        .classList.add('s-active');
-
+/* RESPONSIVE */
+@media(max-width:760px){
+  .gb-sidebar{display:none}
+  .gb-main{margin-left:0}
+  .page{padding:20px 18px}
+  .section-header{margin:-20px -18px 20px -18px;padding:20px 18px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .cover-title{font-size:26px}
 }
+</style>
+</head>
+<body>
+<div class="gb-layout">
+
+<!-- SIDEBAR -->
+<nav class="gb-sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-txt">🔵 PeopleVerse</div>
+    <div class="sidebar-logo-sub">Third Party Data Guidebook</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Umum</div>
+    <a class="nav-item active" onclick="showPage('cover',this)">🏠 Beranda</a>
+    <a class="nav-item" onclick="showPage('overview',this)">📋 Executive Summary</a>
+    <div class="nav-section">Onboarding</div>
+    <a class="nav-item" onclick="showPage('preonboard',this)">👤 Pre-onboarding</a>
+    <a class="nav-item sub" onclick="showPage('tutorial',this)">↳ 📖 Tutorial Step-by-Step</a>
+    <div class="nav-section">Career Transition</div>
+    <a class="nav-item" onclick="showPage('contract',this)">📄 Perpanjangan Kontrak</a>
+    <a class="nav-item" onclick="showPage('rotation',this)">🔄 Rotasi Personel</a>
+    <div class="nav-section">Offboarding</div>
+    <a class="nav-item" onclick="showPage('resign',this)">🚪 Resign</a>
+    <a class="nav-item" onclick="showPage('eoc',this)">📅 End of Contract</a>
+    <a class="nav-item" onclick="showPage('deceased',this)">🕊️ Meninggal Dunia</a>
+  </div>
+  <div class="sidebar-footer">Update: April 2026 · PeopleVerse v7.0</div>
+</nav>
+
+<main class="gb-main">
+
+<!-- ===== COVER ===== -->
+<div class="page active" id="page-cover">
+  <div class="cover-banner">
+    <div class="cover-badge">OFFICIAL GUIDEBOOK · 2026</div>
+    <div class="cover-title">Third Party<br><span>Data Management</span></div>
+    <div class="cover-sub">Panduan resmi pengelolaan data personel Third Party di sistem PeopleVerse — untuk PIC 3rd Party dan HRBP DC.</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><strong>Target User</strong>PIC 3rd Party · HRBP DC</div>
+      <div class="cover-meta-item"><strong>Sistem</strong>PeopleVerse (Sunfish 7.0)</div>
+      <div class="cover-meta-item"><strong>Update</strong>April 2026</div>
+    </div>
+    <div class="cover-nav">
+      <button class="btn-primary" onclick="showPage('overview',null)">Mulai Baca →</button>
+      <button class="btn-outline" onclick="showPage('tutorial',null)">📖 Lihat Tutorial UI</button>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card card-teal" style="cursor:pointer" onclick="showPage('preonboard',null)">
+      <div style="font-size:26px;margin-bottom:8px">👤</div>
+      <div class="card-title">Onboarding</div>
+      <div class="card-body">Pre-onboarding & proses tambah personel baru ke sistem PeopleVerse</div>
+    </div>
+    <div class="card card-teal" style="cursor:pointer" onclick="showPage('contract',null)">
+      <div style="font-size:26px;margin-bottom:8px">📄</div>
+      <div class="card-title">Career Transition</div>
+      <div class="card-body">Perpanjangan kontrak, rotasi, perubahan posisi & working location</div>
+    </div>
+    <div class="card card-teal" style="cursor:pointer" onclick="showPage('resign',null)">
+      <div style="font-size:26px;margin-bottom:8px">🚪</div>
+      <div class="card-title">Offboarding</div>
+      <div class="card-body">Proses resign, end of contract, meninggal dunia, dan pensiun</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OVERVIEW ===== -->
+<div class="page" id="page-overview">
+  <div class="section-header"><div class="section-badge">EXECUTIVE SUMMARY</div><div class="section-title">Mengapa Guidebook ini Penting?</div><div class="section-desc">Panduan adopsi PeopleVerse untuk seluruh proses HR Third Party</div></div>
+  <div class="breadcrumb">Beranda › <span>Executive Summary</span></div>
+  <div class="highlight-box"><div class="hb-title">🎯 Tujuan Guidebook</div><div class="hb-body">Guidebook ini disusun sebagai panduan resmi bagi seluruh pengguna sistem HRIS (PeopleVerse) dalam memahami alur, fitur, serta tata cara penggunaan sistem sesuai proses yang telah ditentukan — khususnya untuk pengelolaan data personel Third Party.</div></div>
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card"><div class="card-title">📌 Objectives</div><div class="card-body"><div style="display:flex;gap:10px;margin-bottom:10px"><span style="color:var(--pv-teal);font-weight:700;flex-shrink:0">01.</span><span>Membantu proses adopsi HRIS baru (PeopleVerse) di Paragon</span></div><div style="display:flex;gap:10px"><span style="color:var(--pv-teal);font-weight:700;flex-shrink:0">02.</span><span>Menjadi referensi utama penggunaan HRIS bagi PIC 3rd Party, HRBP DC, dan HRS HO</span></div></div></div>
+    <div class="card"><div class="card-title">👥 Siapa Penggunanya?</div><div class="card-body"><div class="pill-row"><span class="pill teal">PIC 3rd Party</span><span class="pill teal">HRBP DC (Area)</span><span class="pill">HRS HO & Plant</span><span class="pill">Superior</span><span class="pill">Koordinator Area</span></div></div></div>
+  </div>
+  <div class="flow-title">Ruang Lingkup Proses</div>
+  <table class="info-table">
+    <thead><tr><th>Kategori</th><th>Proses</th><th>PIC Utama</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-blue">Onboarding</span></td><td>Pre-onboarding & Tambah Personel Baru</td><td>PIC 3rd Party → HRBP DC</td></tr>
+      <tr><td rowspan="2"><span class="badge badge-teal">Career Transition</span></td><td>Perpanjangan Kontrak</td><td>PIC 3rd Party → HRBP DC → HRS HO</td></tr>
+      <tr><td>Rotasi Personel</td><td>Superior → HRBP DC Area</td></tr>
+      <tr><td rowspan="4"><span class="badge badge-orange">Offboarding</span></td><td>Resign</td><td>Personel → PIC 3rd Party → HRS</td></tr>
+      <tr><td>End of Contract</td><td>Kontrak 1 → HRBP DC → PIC 3rd Party</td></tr>
+      <tr><td>Meninggal Dunia</td><td>PIC 3rd Party → HRS</td></tr>
+      <tr><td>Pensiun</td><td>HRS HO</td></tr>
+    </tbody>
+  </table>
+  <div class="highlight-box warn-box" style="margin-top:20px"><div class="hb-title">⚠️ Penting Diperhatikan</div><div class="hb-body">Setiap proses memiliki <strong>deadline input data</strong> di sistem PeopleVerse. Keterlambatan input akan berdampak pada proses payroll dan employment status personel.</div></div>
+</div>
+
+<!-- ===== PRE-ONBOARDING (FLOW) ===== -->
+<div class="page" id="page-preonboard">
+  <div class="section-header"><div class="section-badge">ONBOARDING</div><div class="section-title">Pre-onboarding & Onboarding</div><div class="section-desc">Proses penambahan personel Third Party baru ke dalam sistem PeopleVerse</div></div>
+  <div class="breadcrumb">Onboarding › <span>Pre-onboarding & Onboarding</span></div>
+  <div class="highlight-box"><div class="hb-title">📌 Apa itu Pre-onboarding?</div><div class="hb-body">Pre-onboarding adalah proses persiapan sebelum personel baru resmi bergabung. PIC 3rd Party bertanggung jawab melakukan request penambahan personel baru dan melengkapi data awal, yang kemudian disetujui oleh HRBP DC dan diinput ke sistem PeopleVerse oleh HRS HO.</div></div>
+  <div style="margin:16px 0 8px;display:flex;gap:10px;align-items:center">
+    <div class="flow-title" style="margin:0">Alur Proses</div>
+    <button class="btn-primary" style="font-size:11px;padding:6px 14px" onclick="showPage('tutorial',null)">📖 Lihat Tutorial Input →</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(this,'ob1')">HO &amp; Plant</button>
+    <button class="tab-btn" onclick="switchTab(this,'ob2')">Area (DC)</button>
+  </div>
+  <div id="ob1" class="tab-panel active">
+    <div class="flow-container">
+      <div class="actors-row">
+        <div class="actor-col"><div class="actor-head">PIC 3rd Party</div><div class="actor-body"><div class="pbox pbox-light">Melakukan request penambahan personel baru</div><div class="arr">↓</div><div class="pbox pbox-light">Menginput kelengkapan data personel baru & kirim ke approver</div><div style="height:40px"></div><div class="pbox pbox-light">Menginput data personel melalui Employee Information</div><div><span class="step-tag">H-5</span></div></div></div>
+        <div class="actor-col"><div class="actor-head teal">HRBP DC / HRS HO & Plant</div><div class="actor-body"><div style="height:52px"></div><div class="pbox pbox-teal">Menyetujui request data personel baru</div><div><span class="step-tag">H-6</span></div><div class="arr">↓</div><div class="pbox pbox-white">Menginput data pelengkap via Employee Information</div><div><span class="step-tag">H-5</span></div><div class="arr">↓</div><div class="pbox pbox-teal">Mengajukan pembuatan akun corporate Paragon via email</div><div><span class="step-tag">H-5</span></div><div class="arr">↓</div><div class="pbox pbox-white">Menginput akun corporate personel baru</div><div><span class="step-tag">H-3</span></div></div></div>
+        <div class="actor-col"><div class="actor-head light">HRS HO</div><div class="actor-body"><div style="height:120px"></div><div class="pbox pbox-blue">Mereview dan menyetujui request pembuatan akun corporate Paragon</div><div><span class="step-tag">H-4</span></div></div></div>
+      </div>
+    </div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">PIC 3rd Party: H-7</span><span class="deadline-pill dp-teal">HRBP DC: H-3</span><span class="deadline-pill dp-blue">HRS HO: H-4</span></div>
+  </div>
+  <div id="ob2" class="tab-panel">
+    <div class="highlight-box" style="background:#E8F4FE;border-color:#90CAF9"><div class="hb-title">ℹ️ Catatan untuk Area (DC)</div><div class="hb-body">HRBP DC Area berperan lebih aktif dalam melengkapi data dan berkoordinasi langsung dengan PIC 3rd Party.</div></div>
+    <div class="flow-container">
+      <div class="actors-row">
+        <div class="actor-col"><div class="actor-head">PIC 3rd Party</div><div class="actor-body"><div class="pbox pbox-light">Request penambahan personel baru</div><div class="arr">↓</div><div class="pbox pbox-light">Input kelengkapan data & kirim ke HRBP DC Area</div><div><span class="step-tag">H-7</span></div></div></div>
+        <div class="actor-col"><div class="actor-head teal">HRBP DC (Area)</div><div class="actor-body"><div class="pbox pbox-teal">Verifikasi & approve request dari PIC</div><div class="arr">↓</div><div class="pbox pbox-white">Melengkapi data personel di Employee Information</div><div class="arr">↓</div><div class="pbox pbox-teal">Koordinasi pembuatan akun corporate</div><div><span class="step-tag">H-3</span></div></div></div>
+        <div class="actor-col"><div class="actor-head light">HRS HO</div><div class="actor-body"><div class="pbox pbox-blue">Review & approve pembuatan akun corporate Paragon</div><div><span class="step-tag">H-4</span></div></div></div>
+      </div>
+    </div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">PIC 3rd Party: H-7</span><span class="deadline-pill dp-teal">HRBP DC: H-3</span><span class="deadline-pill dp-blue">HRS HO: H-4</span></div>
+  </div>
+</div>
+
+<!-- ===== TUTORIAL ===== -->
+<div class="page" id="page-tutorial">
+  <div class="section-header"><div class="section-badge">TUTORIAL STEP-BY-STEP</div><div class="section-title">Input Personel Baru di PeopleVerse</div><div class="section-desc">Pre-onboarding HO & Plant — Employee Information → Add Employee</div></div>
+  <div class="breadcrumb">Onboarding › Pre-onboarding › <span>Tutorial Input</span></div>
+
+  <div class="global-rules-box">
+    <div class="gr-title">⚠️ Aturan Global — Berlaku untuk SEMUA Field</div>
+    <div class="gr-item">Semua data wajib menggunakan <strong>HURUF KAPITAL</strong> mulai dari pre-onboarding hingga offboarding</div>
+    <div class="gr-item">Sistem hanya bisa diakses via browser <strong>Chrome, Mozilla, atau Edge</strong></div>
+    <div class="gr-item">Validasi Position & Work Location mengacu ke <strong>tinyurl.com/SUNFISHSUPPORT-3RDPARTY</strong></div>
+  </div>
+
+  <div class="tut-intro">
+    <div class="tut-intro-badge">PRE-ONBOARDING</div>
+    <div><div class="tut-intro-title">Melakukan Request Penambahan Personel Baru</div><div class="tut-intro-sub">Menu: Employee → Employee Information → Add Employee</div></div>
+  </div>
+
+  <div class="step-nav" id="stepNav">
+    <div class="step-dot s-active" onclick="goStep(0)"><div class="dot-circle">1</div><div class="dot-label">Buka Employee Info</div></div>
+    <div class="step-dot" onclick="goStep(1)"><div class="dot-circle">2</div><div class="dot-label">Klik Add Employee</div></div>
+    <div class="step-dot" onclick="goStep(2)"><div class="dot-circle">3</div><div class="dot-label">Personal Data</div></div>
+    <div class="step-dot" onclick="goStep(3)"><div class="dot-circle">4</div><div class="dot-label">Employment Data</div></div>
+    <div class="step-dot" onclick="goStep(4)"><div class="dot-circle">5</div><div class="dot-label">Tax & Attendance</div></div>
+    <div class="step-dot" onclick="goStep(5)"><div class="dot-circle">6</div><div class="dot-label">User Account & CF</div></div>
+    <div class="step-dot" onclick="goStep(6)"><div class="dot-circle">7</div><div class="dot-label">Bank & Submit</div></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-panel s-active" id="sp-0">
+    <div class="step-header-tut"><div class="step-num-tut">1</div><div><div class="step-title-tut">Buka menu Employee Information</div><div class="step-sub-tut">Klik ikon Employee di sidebar kiri → pilih Employee Information</div></div></div>
+    <div class="action-box"><div class="action-icon-tut">👤</div><div><div class="action-label">Yang harus dilakukan</div><div class="action-desc">Login ke PeopleVerse, klik ikon <strong>Employee</strong> di sidebar kiri, lalu pilih <strong>Employee Information</strong>.</div><div class="action-path">Employee <span>›</span> Employee Information</div></div></div>
+    <div class="ui-mockup">
+      <div class="ui-topbar"><div class="ui-topbar-logo">PeopleVerse</div><div class="ui-topbar-url">https://id.sunfishhr.com</div></div>
+      <div class="ui-body-tut">
+        <div class="ui-sidebar-tut">
+          <div class="ui-icon-tut">🏠</div>
+          <div class="ui-icon-tut">🏢</div>
+          <div class="ui-icon-tut act">👤</div>
+          <div class="ui-icon-tut">🕐</div>
+          <div class="ui-icon-tut">⚙️</div>
+        </div>
+        <div style="width:140px;background:#f8fafc;border-right:1px solid #e4eef5;padding:10px 0;flex-shrink:0">
+          <div style="font-size:11px;font-weight:700;color:#1e3a8a;padding:6px 12px">👤 Employee</div>
+          <div style="height:1px;background:#e4eef5;margin:4px 0"></div>
+          <div style="font-size:9px;padding:6px 12px;color:#1e3a8a;font-weight:700;background:var(--pv-light-bg);border-left:2px solid var(--pv-teal)">Employee Information</div>
+          <div style="font-size:9px;padding:6px 12px;color:#777">Employee Survey</div>
+          <div style="font-size:9px;padding:6px 12px;color:#777">Onboarding</div>
+          <div style="font-size:9px;padding:6px 12px;color:#777">Employee Letter</div>
+          <div style="font-size:9px;padding:6px 12px;color:#777">Employee Reports</div>
+        </div>
+        <div class="ui-content-tut">
+          <div class="callout">Klik "Employee Information" di sini</div>
+          <div style="font-size:9px;color:#888;margin-bottom:10px">Employee › Employee Information</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <div style="font-size:9px;padding:3px 10px;border-radius:16px;background:#1e3a8a;color:#fff">Active</div>
+            <div style="font-size:9px;padding:3px 10px;border-radius:16px;border:1px solid #ddd;color:#666">Inactive</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div style="background:#f8fafc;border:1px solid #e4eef5;border-radius:8px;padding:8px;display:flex;gap:6px"><div style="width:28px;height:28px;border-radius:50%;background:#c8dff0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a8a;flex-shrink:0">AD</div><div><div style="font-size:8px;font-weight:700;color:#1e3a8a">A. Dwiyanti</div><div style="font-size:7px;color:#888">Host-Fluencer</div></div></div>
+            <div style="background:#f8fafc;border:1px solid #e4eef5;border-radius:8px;padding:8px;display:flex;gap:6px"><div style="width:28px;height:28px;border-radius:50%;background:#c8dff0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a8a;flex-shrink:0">AA</div><div><div style="font-size:8px;font-weight:700;color:#1e3a8a">A. Alfani</div><div style="font-size:7px;color:#888">Area Cust. Business</div></div></div>
+            <div style="background:#f8fafc;border:1px solid #e4eef5;border-radius:8px;padding:8px;display:flex;gap:6px"><div style="width:28px;height:28px;border-radius:50%;background:#c8dff0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a8a;flex-shrink:0">AI</div><div><div style="font-size:8px;font-weight:700;color:#1e3a8a">A. Indah P.</div><div style="font-size:7px;color:#888">Be-Fluencer</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-panel" id="sp-1">
+    <div class="step-header-tut"><div class="step-num-tut">2</div><div><div class="step-title-tut">Klik tombol "+ Add" untuk tambah personel baru</div><div class="step-sub-tut">Tombol ada di pojok kanan atas halaman Employee Information</div></div></div>
+    <div class="action-box"><div class="action-icon-tut">➕</div><div><div class="action-label">Yang harus dilakukan</div><div class="action-desc">Setelah berada di halaman <strong>Employee Information</strong>, klik tombol <strong>"+ Add"</strong> di kanan atas. Form Add Employee akan terbuka.</div><div class="action-path">Employee Information <span>›</span> + Add</div></div></div>
+    <div class="ui-mockup">
+      <div class="ui-topbar"><div class="ui-topbar-logo">PeopleVerse</div><div class="ui-topbar-url">https://id.sunfishhr.com</div></div>
+      <div class="ui-body-tut">
+        <div class="ui-sidebar-tut"><div class="ui-icon-tut">🏠</div><div class="ui-icon-tut act">👤</div><div class="ui-icon-tut">🕐</div><div class="ui-icon-tut">⚙️</div></div>
+        <div class="ui-content-tut">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div style="font-size:12px;font-weight:700;color:#1e3a8a">Employee Information</div>
+            <div style="display:flex;gap:6px">
+              <div style="font-size:9px;padding:5px 10px;border-radius:6px;border:1px solid #1e3a8a;color:#1e3a8a">Directory</div>
+              <div class="hring" style="font-size:9px;padding:5px 12px;border-radius:6px;background:var(--pv-teal);color:#fff;font-weight:700;cursor:pointer">+ Add</div>
+            </div>
+          </div>
+          <div class="callout">Klik "+ Add" untuk mulai input personel baru</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px"><div style="font-size:9px;padding:3px 10px;border-radius:16px;background:#1e3a8a;color:#fff">Active</div><div style="font-size:9px;padding:3px 10px;border-radius:16px;border:1px solid #ddd;color:#666">Inactive</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div style="background:#f8fafc;border:1px solid #e4eef5;border-radius:8px;padding:8px;display:flex;gap:6px"><div style="width:28px;height:28px;border-radius:50%;background:#c8dff0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a8a;flex-shrink:0">AD</div><div><div style="font-size:8px;font-weight:700;color:#1e3a8a">A. Dwiyanti</div><div style="font-size:7px;color:#888">Host-Fluencer</div></div></div>
+            <div style="background:#f8fafc;border:1px solid #e4eef5;border-radius:8px;padding:8px;display:flex;gap:6px"><div style="width:28px;height:28px;border-radius:50%;background:#c8dff0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a8a;flex-shrink:0">AA</div><div><div style="font-size:8px;font-weight:700;color:#1e3a8a">A. Alfani</div><div style="font-size:7px;color:#888">Area Cust. Business</div></div></div>
+            <div style="background:#f8fafc;border:1px solid #e4eef5;border-radius:8px;padding:8px;display:flex;gap:6px"><div style="width:28px;height:28px;border-radius:50%;background:#c8dff0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1e3a8a;flex-shrink:0">AI</div><div><div style="font-size:8px;font-weight:700;color:#1e3a8a">A. Indah P.</div><div style="font-size:7px;color:#888">Be-Fluencer</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-panel" id="sp-2">
+    <div class="step-header-tut"><div class="step-num-tut">3</div><div><div class="step-title-tut">Isi Personal Data</div><div class="step-sub-tut">Tab pertama — data identitas dasar personel. Semua data wajib KAPITAL.</div></div></div>
+    <div class="action-box"><div class="action-icon-tut">🪪</div><div><div class="action-label">Yang harus dilakukan</div><div class="action-desc">Isi semua field bertanda <strong>*</strong> (wajib). Pastikan nama sesuai KTP, NIK 16 digit, dan nomor HP dimulai 62. Klik <strong>Next</strong> setelah selesai.</div></div></div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--pv-red)"></div> Wajib diisi</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--pv-teal)"></div> Ada ketentuan khusus</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e4eef5"></div> Auto / Tidak perlu diisi</div>
+    </div>
+    <div class="ui-mockup">
+      <div class="ui-topbar"><div class="ui-topbar-logo">PeopleVerse</div><div class="ui-topbar-url">Employee › Employee Information › Add Employee</div></div>
+      <div class="ui-body-tut">
+        <div class="ui-sidenav-tut">
+          <div class="ui-sidenav-item-tut act">Personal Data</div>
+          <div class="ui-sidenav-item-tut dim">Employment Data</div>
+          <div class="ui-sidenav-item-tut dim">Tax File Data</div>
+          <div class="ui-sidenav-item-tut dim">Attendance Data</div>
+          <div class="ui-sidenav-item-tut dim">User Account</div>
+          <div class="ui-sidenav-item-tut dim">Custom Field</div>
+          <div class="ui-sidenav-item-tut dim">Bank Account</div>
+        </div>
+        <div class="ui-content-tut">
+          <span class="form-section-title">Nama Personel</span>
+          <div class="form-row-tut triple">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> First Name</div><div class="field-inp hi val">MUHAMMAD</div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Middle Name <span class="opt-tag">opsional</span></div><div class="field-inp hi val">BUDI</div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Last Name <span class="opt-tag">opsional</span></div><div class="field-inp hi val">SANTOSO</div></div>
+          </div>
+          <div class="tooltip-bx">
+            <div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Sesuai KTP — tulis <strong>HURUF KAPITAL SEMUA</strong></span></div>
+            <div class="tt-row"><span class="tt-icon">1</span><span class="tt-text"><strong>1 kata:</strong> isi First Name saja</span></div>
+            <div class="tt-row"><span class="tt-icon">2</span><span class="tt-text"><strong>2 kata:</strong> First Name + Last Name</span></div>
+            <div class="tt-row"><span class="tt-icon">3+</span><span class="tt-text"><strong>3 kata atau lebih:</strong> kombinasikan di Middle dan/atau Last Name</span></div>
+            <div class="tt-eg">✅ "BUDI" → First: BUDI</div>
+            <div class="tt-eg">✅ "BUDI SANTOSO" → First: BUDI · Last: SANTOSO</div>
+            <div class="tt-eg">✅ "MUHAMMAD BUDI SANTOSO" → First: MUHAMMAD · Middle: BUDI · Last: SANTOSO</div>
+          </div>
+          <div class="form-row-tut" style="margin-top:10px">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Gender</div><div class="field-sel hi">Klik sesuai pilihan <span>▾</span></div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Pilih Male atau Female sesuai KTP</span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> ID Number (NIK)</div><div class="field-inp hi val">3171234567890001</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Harus <strong>16 digit</strong> sesuai KTP</span></div><div class="tt-warn">⚠ Tidak boleh kurang/lebih dari 16 digit</div></div></div>
+          </div>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Mobile Phone</div><div class="field-inp hi val">628123456789</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Dimulai <strong>62</strong>, bukan 0</span></div><div class="tt-eg">✅ 628123456789</div><div class="tt-warn">❌ Salah: 08123456789</div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Email</div><div class="field-inp hi val">nama@gmail.com</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Gunakan <strong>personal email</strong>, bukan email perusahaan</span></div></div></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:10px">
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#f0f4f8;color:#555">Prev</div>
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#1e3a8a;color:#fff">Next →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-panel" id="sp-3">
+    <div class="step-header-tut"><div class="step-num-tut">4</div><div><div class="step-title-tut">Isi Employment Data</div><div class="step-sub-tut">Tab kedua — data pekerjaan, posisi, dan penempatan</div></div></div>
+    <div class="action-box"><div class="action-icon-tut">💼</div><div><div class="action-label">Yang harus dilakukan</div><div class="action-desc">Isi status employment, tanggal join, posisi, job grade, dan work location. Data ini menentukan payroll dan penempatan personel di sistem.</div></div></div>
+    <div class="ui-mockup">
+      <div class="ui-topbar"><div class="ui-topbar-logo">PeopleVerse</div><div class="ui-topbar-url">Employee › Employee Information › Add Employee</div></div>
+      <div class="ui-body-tut">
+        <div class="ui-sidenav-tut">
+          <div class="ui-sidenav-item-tut done">✓ Personal Data</div>
+          <div class="ui-sidenav-item-tut act">Employment Data</div>
+          <div class="ui-sidenav-item-tut dim">Tax File Data</div>
+          <div class="ui-sidenav-item-tut dim">Attendance Data</div>
+          <div class="ui-sidenav-item-tut dim">User Account</div>
+          <div class="ui-sidenav-item-tut dim">Custom Field</div>
+          <div class="ui-sidenav-item-tut dim">Bank Account</div>
+        </div>
+        <div class="ui-content-tut">
+          <span class="form-section-title">Employment Data</span>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Employment Status</div><div class="field-sel hi">Sesuai kontrak <span>▾</span></div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Sesuai kontrak — <strong>tidak perlu pilih yang ada 2.0</strong></span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Employee No.</div><div class="field-auto">Auto terisi sistem</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">–</span><span class="tt-text">Tidak perlu diisi — otomatis dari sistem</span></div></div></div>
+          </div>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Join Date</div><div class="field-inp hi val">05/05/2026</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Tanggal <strong>efektif pertama kali join</strong> di Paragon — bukan tanggal perpanjangan kontrak</span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">End Date</div><div class="field-inp hi val">30/09/2026</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">⚠</span><span class="tt-text">Auto terisi — wajib dicek, tanggal 15 atau 30/31 tanpa ditambah 1 hari</span></div></div></div>
+          </div>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Current Position</div><div class="field-sel hi">Lihat link SUNFISHSUPPORT <span>▾</span></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Job Grade</div><div class="field-inp hi val">2A</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Selalu isi <strong>2A</strong> untuk personel 3rd party</span></div></div></div>
+          </div>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Work Location</div><div class="field-sel hi">HO/Depo/SMO/DC <span>▾</span></div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Perhatikan alokasi ke HO, Depo, SMO, E-Commerce, atau DC — lihat link SUNFISHSUPPORT</span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Cost Center</div><div class="field-auto">Auto terisi sesuai posisi</div></div>
+          </div>
+          <div class="field-wrap-tut"><div class="field-lbl">Direct Supervisor</div><div class="field-auto">Tidak perlu diisi — akan diisi HR</div></div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:10px">
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#f0f4f8;color:#555">← Prev</div>
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#1e3a8a;color:#fff">Next →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-panel" id="sp-4">
+    <div class="step-header-tut"><div class="step-num-tut">5</div><div><div class="step-title-tut">Isi Tax File Data & Attendance Data</div><div class="step-sub-tut">Data NIK untuk pajak dan kelompok absensi personel</div></div></div>
+    <div class="action-box"><div class="action-icon-tut">📄</div><div><div class="action-label">Yang harus dilakukan</div><div class="action-desc">Di tab <strong>Tax File Data</strong> isi NIK personel (bukan NPWP). Lanjut ke tab <strong>Attendance Data</strong> pilih Always Present: Yes dan Group Name: FLEXI_FRONTLINER.</div></div></div>
+    <div class="ui-mockup">
+      <div class="ui-topbar"><div class="ui-topbar-logo">PeopleVerse</div><div class="ui-topbar-url">Employee › Employee Information › Add Employee</div></div>
+      <div class="ui-body-tut">
+        <div class="ui-sidenav-tut">
+          <div class="ui-sidenav-item-tut done">✓ Personal Data</div>
+          <div class="ui-sidenav-item-tut done">✓ Employment Data</div>
+          <div class="ui-sidenav-item-tut act">Tax File Data</div>
+          <div class="ui-sidenav-item-tut" style="color:var(--pv-orange);font-weight:600">Attendance Data</div>
+          <div class="ui-sidenav-item-tut dim">User Account</div>
+          <div class="ui-sidenav-item-tut dim">Custom Field</div>
+          <div class="ui-sidenav-item-tut dim">Bank Account</div>
+        </div>
+        <div class="ui-content-tut">
+          <span class="form-section-title">Tax File Data</span>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Tax File No.</div><div class="field-inp hi val">3171234567890001</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Diisi dengan <strong>NIK</strong> personel — bukan nomor NPWP</span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Tax File Date</div><div class="field-inp hi val">06/05/2026</div></div>
+          </div>
+          <div style="height:1px;background:#e4eef5;margin:12px 0"></div>
+          <span class="form-section-title" style="background:var(--pv-orange)">Attendance Data (tab berikutnya)</span>
+          <div class="form-row-tut" style="margin-top:8px">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Always Present</div><div class="field-sel hi">Yes <span>▾</span></div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Selalu pilih <strong>Yes</strong></span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Group Name</div><div class="field-sel hi">FLEXI_FRONTLINER <span>▾</span></div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Selalu pilih <strong>FLEXI_FRONTLINER</strong></span></div></div></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:10px">
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#f0f4f8;color:#555">← Prev</div>
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#1e3a8a;color:#fff">Next →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step-panel" id="sp-5">
+    <div class="step-header-tut"><div class="step-num-tut">6</div><div><div class="step-title-tut">Isi User Account & Custom Field</div><div class="step-sub-tut">Akun sistem dan data tambahan khusus 3rd Party</div></div></div>
+    <div class="action-box"><div class="action-icon-tut">🔑</div><div><div class="action-label">Yang harus dilakukan</div><div class="action-desc">Di <strong>User Account</strong>: isi username, set Active & Non-Admin. Di <strong>Custom Field</strong>: wajib isi Join Status & Employment Type = 3rd Party. Function Authorization tidak perlu diisi.</div></div></div>
+    <div class="ui-mockup">
+      <div class="ui-topbar"><div class="ui-topbar-logo">PeopleVerse</div><div class="ui-topbar-url">Employee › Employee Information › Add Employee</div></div>
+      <div class="ui-body-tut">
+        <div class="ui-sidenav-tut">
+          <div class="ui-sidenav-item-tut done">✓ Personal Data</div>
+          <div class="ui-sidenav-item-tut done">✓ Employment Data</div>
+          <div class="ui-sidenav-item-tut done">✓ Tax File Data</div>
+          <div class="ui-sidenav-item-tut done">✓ Attendance Data</div>
+          <div class="ui-sidenav-item-tut act">User Account</div>
+          <div class="ui-sidenav-item-tut" style="color:var(--pv-orange);font-weight:600">Custom Field</div>
+          <div class="ui-sidenav-item-tut dim">Bank Account</div>
+        </div>
+        <div class="ui-content-tut">
+          <span class="form-section-title">User Account</span>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Username</div><div class="field-inp hi val">MUHAMMAD.BUDI</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Diisi sesuai nama personel — KAPITAL</span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> User Status</div><div class="field-sel hi">Active <span>▾</span></div></div>
+          </div>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> User Type Category</div><div class="field-sel hi">Non-Admin <span>▾</span></div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Pilih <strong>Non-Admin</strong> untuk personel 3rd party</span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Function Authorization</div><div class="field-auto">Tidak perlu diisi</div></div>
+          </div>
+          <div style="height:1px;background:#e4eef5;margin:10px 0"></div>
+          <span class="form-section-title" style="background:var(--pv-orange)">Custom Field (tab berikutnya)</span>
+          <div class="form-row-tut" style="margin-top:8px">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Join Status</div><div class="field-sel hi">3rd Party <span>▾</span></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Employment Type</div><div class="field-sel hi">3rd Party <span>▾</span></div></div>
+          </div>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl">Job Title <span class="opt-tag">opsional</span></div><div class="field-inp" style="color:#aaa">Lihat link SUNFISHSUPPORT</div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Nama Suami/Istri <span class="opt-tag">opsional</span></div><div class="field-inp" style="color:#aaa">Jika sudah menikah</div></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:10px">
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#f0f4f8;color:#555">← Prev</div>
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#1e3a8a;color:#fff">Next →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step-panel" id="sp-6">
+    <div class="step-header-tut"><div class="step-num-tut">7</div><div><div class="step-title-tut">Isi Bank Account & Submit</div><div class="step-sub-tut">Langkah terakhir — data rekening untuk payroll</div></div></div>
+    <div class="action-box"><div class="action-icon-tut">🏦</div><div><div class="action-label">Yang harus dilakukan</div><div class="action-desc">Isi data rekening bank personel, lalu klik <strong>Submit</strong> untuk mengirim ke HRBP DC / HRS HO untuk disetujui. Setelah submit, lengkapi Emergency Contact dan Insurance Data.</div></div></div>
+    <div class="ui-mockup">
+      <div class="ui-topbar"><div class="ui-topbar-logo">PeopleVerse</div><div class="ui-topbar-url">Employee › Employee Information › Add Employee</div></div>
+      <div class="ui-body-tut">
+        <div class="ui-sidenav-tut">
+          <div class="ui-sidenav-item-tut done">✓ Personal Data</div>
+          <div class="ui-sidenav-item-tut done">✓ Employment Data</div>
+          <div class="ui-sidenav-item-tut done">✓ Tax File Data</div>
+          <div class="ui-sidenav-item-tut done">✓ Attendance Data</div>
+          <div class="ui-sidenav-item-tut done">✓ User Account</div>
+          <div class="ui-sidenav-item-tut done">✓ Custom Field</div>
+          <div class="ui-sidenav-item-tut act">Bank Account</div>
+        </div>
+        <div class="ui-content-tut">
+          <span class="form-section-title">Bank Account</span>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Bank Name</div><div class="field-sel hi">Select One <span>▾</span></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Bank Account No.</div><div class="field-inp hi val">1234567890</div></div>
+          </div>
+          <div class="form-row-tut">
+            <div class="field-wrap-tut"><div class="field-lbl"><span class="req">*</span> Account Name</div><div class="field-inp hi val">MUHAMMAD BUDI SANTOSO</div><div class="tooltip-bx"><div class="tt-row"><span class="tt-icon">✦</span><span class="tt-text">Nama sesuai rekening bank — bukan nama panggilan</span></div></div></div>
+            <div class="field-wrap-tut"><div class="field-lbl">Currency Code</div><div class="field-sel">IDR <span>▾</span></div></div>
+          </div>
+          <div style="background:var(--pv-light-bg);border:1px solid var(--pv-teal);border-radius:8px;padding:10px;margin:10px 0;font-size:10px;color:var(--pv-blue);line-height:1.6">
+            📋 Setelah Bank Account, lengkapi juga <strong>Emergency Contact</strong> (hubungan, nama, telepon, alamat) dan <strong>Insurance Data</strong> (BPJS & Jamsostek) di bagian Mandatory Data Completion.
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:8px">
+            <div style="font-size:9px;padding:5px 12px;border-radius:6px;background:#f0f4f8;color:#555">← Prev</div>
+            <div class="hring" style="font-size:9px;padding:5px 16px;border-radius:6px;background:var(--pv-teal);color:#fff;font-weight:700;cursor:pointer">Submit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="success-box"><div class="success-icon">✅</div><div><div class="success-title">Selesai! Data berhasil dikirim</div><div class="success-body">Request penambahan personel baru sudah masuk ke sistem dan menunggu persetujuan HRBP DC / HRS HO. Pastikan follow-up dilakukan sebelum <strong>H-6</strong> dari tanggal join personel.</div></div></div>
+  </div>
+
+  <div class="nav-footer-tut">
+    <button class="btn-tut-prev" onclick="prevStep()" id="btnPrev">← Sebelumnya</button>
+    <span class="step-counter-tut" id="stepCounter">Langkah 1 dari 7</span>
+    <button class="btn-tut-next" onclick="nextStep()" id="btnNext">Selanjutnya →</button>
+  </div>
+
+  <!-- KETENTUAN LENGKAP -->
+  <div style="margin-top:36px;padding-top:28px;border-top:2px solid #e4eef5">
+    <div class="flow-title">📋 Referensi Ketentuan Penulisan Lengkap</div>
+    <div class="rule-section-title"><span>Personal Data</span></div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Nama</div><div class="rule-card-title">Employee Name (First / Middle / Last)</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text">Sesuai <strong>KTP</strong> — wajib <strong>HURUF KAPITAL</strong> semua</div></div>
+      <div class="rule-row"><div class="ri ri-t">1</div><div class="rule-text"><strong>1 kata:</strong> isi di First Name saja<div class="rule-eg">BUDI</div></div></div>
+      <div class="rule-row"><div class="ri ri-t">2</div><div class="rule-text"><strong>2 kata:</strong> First Name + Last Name<div class="rule-eg">First: BUDI · Last: SANTOSO</div></div></div>
+      <div class="rule-row"><div class="ri ri-t">3+</div><div class="rule-text"><strong>3 kata atau lebih:</strong> kombinasikan di Middle dan/atau Last<div class="rule-eg">First: MUHAMMAD · Middle: BUDI · Last: SANTOSO</div></div></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Kontak</div><div class="rule-card-title">Mobile Phone & Email</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Mobile Phone:</strong> dimulai <strong>62</strong>, bukan 0<div class="rule-eg">✅ 628123456789</div><div class="rule-eg-bad">❌ 08123456789</div></div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Email:</strong> gunakan <strong>personal email</strong> — bukan email perusahaan</div></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">NIK</div><div class="rule-card-title">ID Number</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text">Harus tepat <strong>16 digit</strong> sesuai KTP — tidak boleh kurang atau lebih, tidak boleh ada spasi</div></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Alamat</div><div class="rule-card-title">Address Type & Alamat</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Address Type:</strong> pilih <strong>ID address</strong></div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text">Isi mulai dari Address hingga <strong>Zip Code</strong> secara lengkap</div></div>
+    </div>
+    <div class="rule-section-title"><span>Employment Data</span></div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Status & Tanggal</div><div class="rule-card-title">Employment Status, Join Date, End Date</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Employment Status:</strong> sesuai kontrak — tidak perlu pilih yang ada 2.0</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Join Date:</strong> tanggal efektif pertama kali join di Paragon, <strong>bukan</strong> tanggal perpanjangan</div></div>
+      <div class="rule-row"><div class="ri ri-warn">!</div><div class="rule-text"><strong>End Date:</strong> auto terisi — wajib dicek, tanggal 15 atau 30/31 tanpa ditambah 1 hari</div></div>
+      <div class="rule-row"><div class="ri ri-s">–</div><div class="rule-text"><strong>Employee No. & Cost Center:</strong> auto terisi — tidak perlu diisi manual</div></div>
+      <div class="rule-row"><div class="ri ri-s">–</div><div class="rule-text"><strong>Direct Supervisor:</strong> tidak perlu diisi — akan diisi HR</div></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Posisi</div><div class="rule-card-title">Position, Job Grade, Work Location</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Current Position:</strong> mengacu ke link tinyurl.com/SUNFISHSUPPORT-3RDPARTY</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Job Grade:</strong> selalu isi <strong>2A</strong></div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Work Location:</strong> perhatikan alokasi ke HO, Depo, SMO, E-Commerce, atau DC — lihat link SUNFISHSUPPORT</div></div>
+    </div>
+    <div class="rule-section-title"><span>Tax, Attendance & User Account</span></div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Pajak</div><div class="rule-card-title">Tax File Data</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Tax File No.:</strong> diisi dengan <strong>NIK</strong> personel — bukan nomor NPWP</div></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Absensi</div><div class="rule-card-title">Attendance Data</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Always Present:</strong> pilih <strong>Yes</strong></div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Group Name:</strong> pilih <strong>FLEXI_FRONTLINER</strong></div></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Akun</div><div class="rule-card-title">User Account</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Username:</strong> diisi sesuai nama personel (KAPITAL)</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>User Status:</strong> Active · <strong>User Type Category:</strong> Non-Admin</div></div>
+      <div class="rule-row"><div class="ri ri-s">–</div><div class="rule-text"><strong>Function Authorization:</strong> tidak perlu diisi</div></div>
+    </div>
+    <div class="rule-section-title"><span>Custom Field</span></div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">CF</div><div class="rule-card-title">Custom Field — Ketentuan Lengkap</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Join Status*:</strong> 3rd Party · <strong>Employment Type*:</strong> 3rd Party</div></div>
+      <div class="rule-row"><div class="ri ri-t">O</div><div class="rule-text"><strong>Job Title:</strong> lihat link SUNFISHSUPPORT (opsional)</div></div>
+      <div class="rule-row"><div class="ri ri-t">O</div><div class="rule-text"><strong>Plant Unit:</strong> isi J1, J2, dst — jika di lokasi Plant</div></div>
+      <div class="rule-row"><div class="ri ri-t">O</div><div class="rule-text"><strong>Nomor kartu ID card:</strong> nomor ID employee sesuai entitas personel</div></div>
+      <div class="rule-row"><div class="ri ri-s">–</div><div class="rule-text">TMK Date, Point of Hire, Previous Company, Old Work Email, Labour Category, Subdepartment, Bivi ID, Cluster, Channel, Brand, Area, Region — <strong>tidak perlu diisi</strong></div></div>
+    </div>
+    <div class="rule-section-title"><span>Mandatory Data Completion (setelah Submit)</span></div>
+    <div class="rule-card">
+      <div class="rule-card-hd"><div class="rule-card-badge">Darurat</div><div class="rule-card-title">Emergency Contact & Insurance Data</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Emergency Contact:</strong> Relationship, Name, Phone, dan Address — semua wajib dilengkapi</div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Insurance Name:</strong> diisi dengan <strong>BPJS</strong> dan <strong>Jamsostek</strong></div></div>
+      <div class="rule-row"><div class="ri ri-w">W</div><div class="rule-text"><strong>Insurance No.:</strong> diisi dengan tipe insurance yang sesuai</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PERPANJANGAN KONTRAK ===== -->
+<div class="page" id="page-contract">
+  <div class="section-header"><div class="section-badge">CAREER TRANSITION</div><div class="section-title">Perpanjangan Kontrak</div><div class="section-desc">Career Transition – Movement – Contract Extension</div></div>
+  <div class="breadcrumb">Career Transition › <span>Perpanjangan Kontrak</span></div>
+  <div class="highlight-box"><div class="hb-title">📌 Tentang Proses Ini</div><div class="hb-body">Perpanjangan kontrak dilakukan ketika masa kontrak personel Third Party akan berakhir. Proses dimulai dari notifikasi email oleh Kontrak 1, dikonfirmasi Superior, dan dieksekusi melalui PeopleVerse oleh HRBP DC dan PIC 3rd Party.</div></div>
+  <div class="flow-title">Tabel Effective Date per 3rd Party</div>
+  <table class="info-table">
+    <thead><tr><th>3rd Party</th><th>Payroll Cycle</th><th>Employment Status Change</th></tr></thead>
+    <tbody>
+      <tr><td>Absolute Servis Nusantara</td><td>1 – 30/31</td><td><span class="badge badge-blue">1</span></td></tr>
+      <tr><td>Absolute Services</td><td>1 – 30/31</td><td><span class="badge badge-blue">1</span></td></tr>
+      <tr><td>ISS</td><td>1 – 30/31</td><td><span class="badge badge-blue">1</span></td></tr>
+      <tr><td>Calroweila</td><td>16 – 15</td><td><span class="badge badge-teal">16</span></td></tr>
+      <tr><td>Elabram</td><td>16 – 15</td><td><span class="badge badge-teal">16</span></td></tr>
+      <tr><td>TCID</td><td>16 – 15</td><td><span class="badge badge-teal">16</span></td></tr>
+      <tr><td>KAN</td><td>16 – 15</td><td><span class="badge badge-teal">16</span></td></tr>
+    </tbody>
+  </table>
+  <div class="flow-title">Alur Proses</div>
+  <div class="flow-container">
+    <div class="actors-row">
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Kontrak 1</div><div class="actor-body"><div class="pbox pbox-blue">Mengirimkan email reminder habis kontrak ke Superior, HRBP DC/Y, HRS, dan PIC 3rd Party</div><div><span class="step-tag orange">H-60, H-30, H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Superior</div><div class="actor-body"><div class="pbox pbox-white">Memberikan konfirmasi kontrak dan mengisi list personel via link email reminder</div><div><span class="step-tag orange">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRBP DC / HRS HO</div><div class="actor-body"><div class="pbox pbox-teal">Konfirmasi kontrak via link pada email reminder Superior</div><div><span class="step-tag orange">H-14</span></div><div class="arr">↓</div><div class="pbox pbox-teal">Melakukan request career transition – movement – employment status change</div><div><span class="step-tag">H-14</span></div><div class="arr">↓</div><div class="pbox pbox-white">Menyatakan personel sudah habis kontrak dikonfirmasi</div><div><span class="step-tag">H-7</span></div></div></div>
+      <div class="actor-col"><div class="actor-head" style="font-size:9px">PIC 3rd Party</div><div class="actor-body"><div style="height:80px"></div><div class="pbox pbox-light">Melakukan request career transition – movement – employment status change</div><div><span class="step-tag">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head light" style="font-size:9px">HRS HO</div><div class="actor-body"><div style="height:80px"></div><div class="pbox pbox-blue">Menyetujui request career transition</div><div><span class="step-tag">H-7</span></div></div></div>
+    </div>
+  </div>
+  <div class="deadline-row"><span class="deadline-pill dp-dark">Kontrak 1: H-60, H-30, H-14</span><span class="deadline-pill dp-teal">HRBP DC: H-14</span><span class="deadline-pill dp-dark">PIC 3rd Party: H-14</span><span class="deadline-pill dp-blue">HRS HO: H-7</span></div>
+  <div class="highlight-box warn-box" style="margin-top:20px"><div class="hb-title">⚠️ Dashboard Masih Dalam Pengembangan</div><div class="hb-body">Fitur Dashboard monitoring status kontrak masih dalam progress. Pantau melalui email reminder dari Kontrak 1 dan koordinasi langsung dengan HRBP DC.</div></div>
+</div>
+
+<!-- ===== ROTASI ===== -->
+<div class="page" id="page-rotation">
+  <div class="section-header"><div class="section-badge">CAREER TRANSITION</div><div class="section-title">Rotasi Personel</div><div class="section-desc">Career Transition – Movement – Rotation</div></div>
+  <div class="breadcrumb">Career Transition › <span>Rotasi Personel</span></div>
+  <div class="highlight-box"><div class="hb-title">📌 Tentang Proses Rotasi</div><div class="hb-body">Rotasi personel adalah perpindahan personel dari satu area/lokasi ke area/lokasi lain. Proses ini melibatkan Superior, HRBP DC, HRS HO, dan PIC 3rd Party.</div></div>
+  <div class="tab-bar"><button class="tab-btn active" onclick="switchTab(this,'rot1')">HO &amp; Plant</button><button class="tab-btn" onclick="switchTab(this,'rot2')">Area (DC)</button></div>
+  <div id="rot1" class="tab-panel active">
+    <div class="flow-container"><div class="actors-row">
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Superior</div><div class="actor-body"><div class="pbox pbox-blue">Berdiskusi dengan current BRP terkait rencana rotasi</div><div><span class="step-tag orange">H-30</span></div></div></div>
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">BRP Lama</div><div class="actor-body"><div class="pbox pbox-white">Koordinasikan rotasi ke HRBP DC terkait, pendampingan ke superior baru</div><div><span class="step-tag orange">H-30</span></div></div></div>
+      <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRS</div><div class="actor-body"><div class="pbox pbox-teal">Koordinasikan rotation ke HO, komunikasikan ke personel</div><div><span class="step-tag">H-13</span></div><div class="arr">↓</div><div class="pbox pbox-white">Memantau dan menyetujui request movement – rotation</div></div></div>
+      <div class="actor-col"><div class="actor-head" style="font-size:9px">PIC 3rd Party</div><div class="actor-body"><div class="pbox pbox-light">Melakukan request career transition – movement – rotation</div><div><span class="step-tag">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head light" style="font-size:9px">HRBP DC (Area)</div><div class="actor-body"><div class="pbox pbox-blue">Mereview dan menyetujui request movement – rotation</div><div><span class="step-tag">H-7</span></div></div></div>
+    </div></div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">Superior & BRP: H-30</span><span class="deadline-pill dp-teal">HRS: H-13</span><span class="deadline-pill dp-dark">PIC 3rd Party: H-14</span><span class="deadline-pill dp-blue">HRBP DC: H-7</span></div>
+  </div>
+  <div id="rot2" class="tab-panel">
+    <div class="flow-container"><div class="actors-row">
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Superior</div><div class="actor-body"><div class="pbox pbox-blue">Diskusi dengan HRBP DC terkait rencana rotasi</div><div><span class="step-tag orange">H-30</span></div></div></div>
+      <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRBP DC (Area)</div><div class="actor-body"><div class="pbox pbox-teal">Koordinasikan ke HRBP DC area baru, lengkapi data PIC untuk request</div><div><span class="step-tag orange">H-30</span></div><div class="arr">↓</div><div class="pbox pbox-white">Menyetujui request dan melengkapi data personel di area baru</div><div><span class="step-tag">H-7</span></div></div></div>
+      <div class="actor-col"><div class="actor-head" style="font-size:9px">PIC 3rd Party</div><div class="actor-body"><div style="height:40px"></div><div class="pbox pbox-light">Melakukan request career transition – movement – rotation</div><div><span class="step-tag">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head light" style="font-size:9px">HRS (HO &amp; Plant)</div><div class="actor-body"><div style="height:40px"></div><div class="pbox pbox-blue">Mereview dan menyetujui request movement – rotation</div><div><span class="step-tag">H-7</span></div></div></div>
+    </div></div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">Superior: H-30</span><span class="deadline-pill dp-teal">HRBP DC: H-30 & H-7</span><span class="deadline-pill dp-dark">PIC: H-14</span><span class="deadline-pill dp-blue">HRS: H-7</span></div>
+  </div>
+</div>
+
+<!-- ===== RESIGN ===== -->
+<div class="page" id="page-resign">
+  <div class="section-header"><div class="section-badge">OFFBOARDING</div><div class="section-title">Resign (Pengunduran Diri)</div><div class="section-desc">Offboarding – Termination – Resign</div></div>
+  <div class="breadcrumb">Offboarding › <span>Resign</span></div>
+  <div class="highlight-box"><div class="hb-title">📌 Tentang Proses Resign</div><div class="hb-body">Proses resign diawali dari personel yang mengajukan pengunduran diri secara tertulis. PIC 3rd Party melakukan request termination di PeopleVerse, dan HRBP DC / HRS memproses offboarding checklist.</div></div>
+  <div class="flow-title">Effective Date – Resignation</div>
+  <table class="info-table">
+    <thead><tr><th>3rd Party</th><th>Payroll Cycle</th><th>Resignation</th></tr></thead>
+    <tbody>
+      <tr><td>Absolute Servis Nusantara / Absolute Services / ISS</td><td>1 – 30/31</td><td><span class="badge badge-orange">As requested</span></td></tr>
+      <tr><td>Calroweila / Elabram / TCID / KAN</td><td>16 – 15</td><td><span class="badge badge-orange">As requested</span></td></tr>
+    </tbody>
+  </table>
+  <div class="tab-bar"><button class="tab-btn active" onclick="switchTab(this,'res1')">HO &amp; Plant</button><button class="tab-btn" onclick="switchTab(this,'res2')">Area (DC)</button></div>
+  <div id="res1" class="tab-panel active">
+    <div class="flow-container"><div class="actors-row">
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Personel</div><div class="actor-body"><div class="pbox pbox-blue">Mengajukan pengunduran diri dengan melampirkan surat ke Superior, PIC 3rd Party, dan HRS via email</div><div><span class="step-tag orange">H-30</span></div><div style="height:40px"></div><div class="pbox pbox-light">Memproses offboarding checklist</div><div><span class="step-tag">H-7</span></div></div></div>
+      <div class="actor-col"><div class="actor-head" style="font-size:9px">PIC 3rd Party</div><div class="actor-body"><div class="pbox pbox-light">Melakukan request career transition – termination – resignation, lampirkan dokumen pengunduran diri</div><div><span class="step-tag">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRS</div><div class="actor-body"><div style="height:40px"></div><div class="pbox pbox-teal">Mereview dan menyetujui request</div><div class="arr">↓</div><div class="pbox pbox-white">Memproses offboarding checklist personel</div><div><span class="step-tag">H-7</span></div></div></div>
+    </div></div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">Personel: H-30</span><span class="deadline-pill dp-dark">PIC 3rd Party: H-14</span><span class="deadline-pill dp-teal">HRS: H-7 & H-30</span></div>
+  </div>
+  <div id="res2" class="tab-panel">
+    <div class="flow-container"><div class="actors-row">
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Personel</div><div class="actor-body"><div class="pbox pbox-blue">Mengajukan pengunduran diri ke Superior, Koordinator Area, HRBP DC, dan HRS via email</div><div><span class="step-tag orange">H-30</span></div><div style="height:40px"></div><div class="pbox pbox-light">Memproses offboarding checklist</div><div><span class="step-tag">H-7</span></div></div></div>
+      <div class="actor-col"><div class="actor-head" style="font-size:9px">PIC 3rd Party</div><div class="actor-body"><div class="pbox pbox-light">Melakukan request career transition – termination – resignation, lampirkan dokumen pengunduran diri</div><div><span class="step-tag">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRBP DC</div><div class="actor-body"><div style="height:40px"></div><div class="pbox pbox-teal">Mereview dan menyetujui request</div><div class="arr">↓</div><div class="pbox pbox-white">Memproses offboarding checklist personel</div><div><span class="step-tag">H-7</span></div></div></div>
+    </div></div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">Personel: H-30</span><span class="deadline-pill dp-dark">PIC: H-14</span><span class="deadline-pill dp-teal">HRBP DC: H-7 & H-30</span></div>
+  </div>
+</div>
+
+<!-- ===== END OF CONTRACT ===== -->
+<div class="page" id="page-eoc">
+  <div class="section-header"><div class="section-badge">OFFBOARDING</div><div class="section-title">End of Contract</div><div class="section-desc">Offboarding – Termination – End of Contract / Min. 4 Tahun</div></div>
+  <div class="breadcrumb">Offboarding › <span>End of Contract</span></div>
+  <div class="highlight-box"><div class="hb-title">📌 Tentang Proses End of Contract</div><div class="hb-body">Proses End of Contract terjadi ketika kontrak personel berakhir dan <strong>tidak diperpanjang</strong>. Ada dua jenis: End of Contract biasa, dan End of Contract untuk personel dengan masa kerja minimum 4 tahun.</div></div>
+  <div class="flow-container"><div class="actors-row">
+    <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Kontrak 1</div><div class="actor-body"><div class="pbox pbox-blue">Mengirimkan email reminder habis kontrak ke semua pihak</div><div><span class="step-tag orange">H-60, H-30, H-14</span></div></div></div>
+    <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Superior</div><div class="actor-body"><div class="pbox pbox-white">Konfirmasi end of contract via link email reminder</div><div><span class="step-tag orange">H-24</span></div><div class="arr">↓</div><div class="pbox pbox-white">Menyatakan personel habis kontrak dikonfirmasi</div><div><span class="step-tag">H-7</span></div></div></div>
+    <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRBP DC / HRS HO</div><div class="actor-body"><div class="pbox pbox-teal">Monitor & follow up ke Superior</div><div><span class="step-tag orange">H-24</span></div><div class="arr">↓</div><div class="pbox pbox-teal">Melakukan request termination – involuntary – end of contract</div><div><span class="step-tag">H-14</span></div></div></div>
+    <div class="actor-col"><div class="actor-head" style="font-size:9px">PIC 3rd Party</div><div class="actor-body"><div style="height:80px"></div><div class="pbox pbox-light">Melakukan request termination – involuntary – end of contract untuk beberapa personel</div><div><span class="step-tag">H-14</span></div></div></div>
+  </div></div>
+  <div class="deadline-row"><span class="deadline-pill dp-dark">Kontrak 1: H-60, H-30, H-14</span><span class="deadline-pill dp-teal">HRBP DC: H-14</span><span class="deadline-pill dp-dark">PIC: H-14</span><span class="deadline-pill dp-blue">HRS HO: H-7</span></div>
+  <div class="highlight-box warn-box" style="margin-top:20px"><div class="hb-title">⚠️ Dashboard Masih Dalam Pengembangan</div><div class="hb-body">Koordinasikan secara manual melalui email reminder dari Kontrak 1 dan pastikan konfirmasi dari Superior diterima sebelum H-14.</div></div>
+</div>
+
+<!-- ===== DECEASED ===== -->
+<div class="page" id="page-deceased">
+  <div class="section-header"><div class="section-badge">OFFBOARDING</div><div class="section-title">Meninggal Dunia</div><div class="section-desc">Offboarding – Termination – Deceased</div></div>
+  <div class="breadcrumb">Offboarding › <span>Meninggal Dunia</span></div>
+  <div class="highlight-box danger-box"><div class="hb-title">🕊️ Tentang Proses Ini</div><div class="hb-body">Proses ini dilakukan ketika personel meninggal dunia. Semua pihak saling menginformasikan dan HR memproses offboarding dengan memperhatikan keperluan keluarga personel bersama Paragon.</div></div>
+  <div class="tab-bar"><button class="tab-btn active" onclick="switchTab(this,'dec1')">HO &amp; Plant</button><button class="tab-btn" onclick="switchTab(this,'dec2')">Area (DC)</button></div>
+  <div id="dec1" class="tab-panel active">
+    <div class="flow-container"><div class="actors-row">
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Personel/Keluarga/Rekan</div><div class="actor-body"><div class="pbox pbox-blue">Saling menginformasikan kondisi meninggal ke Superior, Koordinator, PIC 3rd Party, dan HRS</div><div><span class="step-tag orange">H-30</span></div><div style="height:30px"></div><div class="pbox pbox-light">Memproses offboarding checklist dari HRS</div><div><span class="step-tag">H-7</span></div></div></div>
+      <div class="actor-col"><div class="actor-head" style="font-size:9px">Koordinator / PIC 3rd Party</div><div class="actor-body"><div style="height:30px"></div><div class="pbox pbox-light">Melakukan request termination – deceased, personel di-discontinue di sistem</div><div><span class="step-tag">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRS</div><div class="actor-body"><div style="height:50px"></div><div class="pbox pbox-teal">Memproses offboarding checklist berkaitan dengan Paragon</div><div><span class="step-tag">H-7</span></div></div></div>
+    </div></div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">Semua Pihak: H-30</span><span class="deadline-pill dp-dark">PIC: H-14</span><span class="deadline-pill dp-teal">HRS: H-7</span></div>
+  </div>
+  <div id="dec2" class="tab-panel">
+    <div class="flow-container"><div class="actors-row">
+      <div class="actor-col"><div class="actor-head dark" style="font-size:9px">Personel/Keluarga/Rekan</div><div class="actor-body"><div class="pbox pbox-blue">Saling menginformasikan kondisi meninggal ke Superior, Koordinator, PIC 3rd Party, dan HRBP DC</div><div><span class="step-tag orange">H-30</span></div><div style="height:30px"></div><div class="pbox pbox-light">Memproses offboarding checklist dari HRBP DC</div><div><span class="step-tag">H-7</span></div></div></div>
+      <div class="actor-col"><div class="actor-head" style="font-size:9px">PIC 3rd Party</div><div class="actor-body"><div style="height:30px"></div><div class="pbox pbox-light">Melakukan request termination – deceased, personel di-discontinue di sistem</div><div><span class="step-tag">H-14</span></div></div></div>
+      <div class="actor-col"><div class="actor-head teal" style="font-size:9px">HRBP DC</div><div class="actor-body"><div style="height:50px"></div><div class="pbox pbox-teal">Mereview, menyetujui, dan memproses offboarding checklist</div><div><span class="step-tag">H-7</span></div></div></div>
+    </div></div>
+    <div class="deadline-row"><span class="deadline-pill dp-dark">Semua Pihak: H-30</span><span class="deadline-pill dp-dark">PIC: H-14</span><span class="deadline-pill dp-teal">HRBP DC: H-7</span></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+var curStep=0,totalSteps=7;
+
+function showPage(key,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  var pg=document.getElementById('page-'+key);
+  if(pg){pg.classList.add('active');window.scrollTo(0,0)}
+  if(el)el.classList.add('active');
+}
+
+function switchTab(btn,targetId){
+  var page=btn.closest('.page');
+  page.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  page.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  var t=document.getElementById(targetId);
+  if(t)t.classList.add('active');
+}
+
+function goStep(n){
+  document.querySelectorAll('.step-panel').forEach(function(p,i){
+    p.classList.toggle('s-active',i===n);
+  });
+  document.querySelectorAll('.step-dot').forEach(function(d,i){
+    d.classList.remove('s-active','s-done');
+    if(i===n)d.classList.add('s-active');
+    else if(i<n)d.classList.add('s-done');
+  });
+  curStep=n;
+  var counter=document.getElementById('stepCounter');
+  if(counter)counter.textContent='Langkah '+(n+1)+' dari '+totalSteps;
+  var prev=document.getElementById('btnPrev');
+  var next=document.getElementById('btnNext');
+  if(prev){prev.disabled=n===0;prev.style.opacity=n===0?'0.4':'1'}
+  if(next){next.disabled=n===totalSteps-1;next.style.opacity=n===totalSteps-1?'0.4':'1';next.textContent=n===totalSteps-1?'Selesai ✓':'Selanjutnya →'}
+  document.getElementById('page-tutorial').scrollTo(0,0);
+  window.scrollTo(0,0);
+}
+
+function nextStep(){if(curStep<totalSteps-1)goStep(curStep+1)}
+function prevStep(){if(curStep>0)goStep(curStep-1)}
+
+document.querySelectorAll('.nav-item[onclick]').forEach(function(item){
+  item.addEventListener('click',function(){
+    document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+    this.classList.add('active');
+  });
+});
 </script>
 </body>
 </html>
